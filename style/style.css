@@ -80,6 +80,8 @@ li {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre légère autour du commutateur */
     width: 10%;
     margin: auto; /* Si le switch-wrapper est lui-même un bloc de niveau supérieur */
+    margin-top: 20px;
+    margin-bottom: 0px;
 }
 
 .switch-button button {
@@ -159,5 +161,28 @@ button:hover {
     color : var(--btn-info);
 }
 
+#mapSection {
+    display: flex; /* Active Flexbox pour la disposition horizontale */
+    align-items: flex-start; /* Alignez les enfants au haut du conteneur */
+    justify-content: center; /* Centre les enfants horizontalement */
+    width: 70%;
+    height: 70vh;
+    margin: auto;
+    margin-top: 20px;
+    background-color: var(--text-info);
+    padding-top: 50px;
+    border-radius: 8px;
+}
 
+#map {
+    height: 60vh;
+    width: 60%;
+}
+
+.filters {
+    flex: 1; /* Les filtres prennent l'espace disponible */
+    padding: 20px; /* Espacement autour des filtres */
+    max-width: 300px; /* Largeur maximale pour les filtres */
+    /* Ajoutez des styles supplémentaires si nécessaire */
+}
 /* Ajouter ici des styles supplémentaires selon vos besoins */
