@@ -12,7 +12,7 @@ function convertToUTF8($text) {
 
 // Fonction pour importer des données depuis un fichier CSV à la base de données
 function importCsvToDataBase($filename, $headers) {
-    global $dbh; // Utilise l'instance PDO déclarée globalement
+    global $conn; // Utilise l'instance mysqli déclarée globalement
     $nomTable = "liste_controle"; // Nom de la table dans laquelle on insère les données
     $yearExtracted = preg_replace('/[^0-9]/', '', basename($filename));  // Extrait l'année du nom du fichier
 
@@ -28,7 +28,7 @@ function importCsvToDataBase($filename, $headers) {
 
             if (!in_array($yearExtracted, ['2014', '2015', '2016'])) {
                 array_unshift($data, $yearExtracted); // Ajoute l'année au début de chaque ligne de données
-                if (!in_array('annee', $headers)) { 
+                if (!in_array('annee', $headers)) {
                     array_unshift($headers, 'annee'); // Ajoute 'annee' au début des en-têtes si manquant
                 }
             }
@@ -38,20 +38,14 @@ function importCsvToDataBase($filename, $headers) {
                 continue;
             }
 
-            $sql = "INSERT INTO $nomTable (" . implode(", ", $headers) . ") VALUES (:" . implode(", :", $headers) . ")";
-            $stmt = $dbh->prepare($sql);
+            $placeholders = implode(', ', array_fill(0, count($headers), '?'));
+            $sql = "INSERT INTO $nomTable (" . implode(", ", $headers) . ") VALUES ($placeholders)";
+            $stmt = $conn->prepare($sql);
 
-            $bindArray = array_combine($headers, $data); // Combine les en-têtes et les données pour le binding
-            foreach ($bindArray as $key => $value) { 
-                $stmt->bindValue(":$key", $value); // Lie chaque valeur avec son placeholder correspondant
-            }
+            $stmt->bind_param(str_repeat('s', count($headers)), ...$data); // Lie chaque valeur avec son placeholder correspondant
 
-            try {
-                if (!$stmt->execute()) {
-                    echo "Erreur SQL: " . implode(", ", $stmt->errorInfo()) . " dans le fichier $filename\n";
-                }
-            } catch (Exception $e) {
-                echo "Exception: " . $e->getMessage() . " dans le fichier $filename\n";
+            if (!$stmt->execute()) {
+                echo "Erreur SQL: " . $stmt->error . " dans le fichier $filename\n";
             }
         }
 
@@ -70,7 +64,7 @@ $entetes_files = [
     '2019.csv' => ['type_de_controle', 'modalite', 'nom', 'departement', 'lieu_controle', 'secteur_activite'],
     '2020.csv' => ['type_de_controle', 'modalite', 'nom', 'departement', 'lieu_controle', 'secteur_activite'],
     '2021.csv' => ['type_de_controle', 'modalite', 'nom', 'departement', 'lieu_controle', 'pays', 'secteur_activite'],
-    '2022.csv' => ['type_de_controle', 'modalite', 'nom', 'departement', 'lieu_controle', 'pays', 'secteur_activite'],
+    '2022.csv' => ['type_de_controle', 'nom', 'modalite', 'departement', 'lieu_controle', 'pays', 'secteur_activite'],
 ];
 
 foreach ($entetes_files as $file => $headers) { // Boucle sur chaque fichier pour l'importation

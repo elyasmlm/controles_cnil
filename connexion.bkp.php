@@ -1,4 +1,7 @@
 <?php
-$user =  '';
-$pass =  '';
-$dbh = new PDO('mysql:;dbname=',$user,$pass);?>
+    $servername = 'localhost';
+    $username = 'root';
+    $password = '';
+    $dbname = 'test';
+    $dbh = new mysqli($servername, $username, $password, $dbname);
+?>

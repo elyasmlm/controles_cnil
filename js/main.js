@@ -6,7 +6,7 @@ function toggleView(view) {
     var mapBtn = document.getElementById('mapBtn');
 
     if (view === 'map') {
-        mapSection.style.display = 'block';
+        mapSection.style.display = 'flex';
         statsSection.style.display = 'none';
         mapBtn.classList.add('active');
         statBtn.classList.remove('active');
