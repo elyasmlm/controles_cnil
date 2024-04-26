@@ -1,7 +1,7 @@
 <?php
     include_once('head.php');
     include_once('connexion.bkp.php');
-    include_once('class/contoleCNIL.class.php');
+    include_once('class/city.class.php');
 
 ?>
 
