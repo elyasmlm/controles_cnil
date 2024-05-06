@@ -1,6 +1,10 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+
 include '../connexion.php';  // Connexion à la base de données
-require_once 'place.class.php';  // Inclure la classe Place
+require_once '../class/place.class.php';  // Inclure la classe Place
 
 // Fonction pour convertir des textes en UTF-8
 function convertToUTF8($text) {
@@ -13,7 +17,7 @@ function convertToUTF8($text) {
 
 // Fonction pour importer des données depuis un fichier CSV à la base de données
 function importCsvToDataBase($filename, $headers) {
-    global $conn; // Utilise l'instance mysqli déclarée globalement
+    global $dbh; // Utilise l'instance mysqli déclarée globalement
     $nomTable = "liste_controle"; // Nom de la table dans laquelle on insère les données
     $yearExtracted = preg_replace('/[^0-9]/', '', basename($filename));  // Extrait l'année du nom du fichier
 
@@ -42,7 +46,7 @@ function importCsvToDataBase($filename, $headers) {
 
             $placeholders = implode(', ', array_fill(0, count($headers), '?'));
             $sql = "INSERT INTO $nomTable (" . implode(", ", $headers) . ") VALUES ($placeholders)";
-            $stmt = $conn->prepare($sql);
+            $stmt = $dbh->prepare($sql);
 
             $stmt->bind_param(str_repeat('s', count($headers)), ...$data); // Lie chaque valeur avec son placeholder correspondant
 
