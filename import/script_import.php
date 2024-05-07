@@ -76,6 +76,49 @@ $entetes_files = [
 foreach ($entetes_files as $file => $headers) { // Boucle sur chaque fichier pour l'importation
     importCsvToDataBase("../data/$file", $headers);
 }
+    $query = "SELECT id, lieu_controle, departement, pays FROM liste_controle WHERE longitude IS NULL AND latitude IS NULL";
+    $result = $dbh->query($query);
+    var_dump($result);
+
+    if ($result && $result->num_rows > 0) {
+        $updateSql = "UPDATE liste_controle SET latitude = ?, longitude = ? WHERE id = ?";
+        $updateStmt = $dbh->prepare($updateSql);
+
+        $latitude = 0.0;
+        $longitude = 0.0;
+        $id = 0;
+        
+        $updateStmt->bind_param('ddi', $latitude, $longitude, $id);
+
+        while ($row = $result->fetch_assoc()) {
+            $id = $row['id'];
+            $name = $row['lieu_controle'];
+            $dep = $row['departement'];
+            $country = isset($row['pays']) ? $row['pays'] : 'France';
+
+            // Créez un nouvel objet Place et trouvez les coordonnées
+            $place = new Place($name, $dep, $country);
+            try {
+                $coordinates = $place->findCoordinates();
+                if ($coordinates) {
+                    $latitude = $coordinates['latitude'];
+                    echo $latitude;
+                    $longitude = $coordinates['longitude'];
+                    echo $longitude;
+                    $updateStmt->execute();
+                    echo "Mise à jour réussie pour ID {$id}: ({$latitude}, {$longitude})\n";
+                }
+            } catch (Exception $e) {
+                echo "Erreur pour ID {$id}: " . $e->getMessage() . "\n";
+            }
+        }
+        $updateStmt->close();
+    } else {
+        echo "Aucun contrôle trouvé nécessitant une mise à jour.\n";
+    }
+
+    // Fermez la connexion
+    $conn->close();
 
 
 ?>
