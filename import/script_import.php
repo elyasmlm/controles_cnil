@@ -73,9 +73,9 @@ $entetes_files = [
     '2022.csv' => ['type_de_controle', 'nom', 'modalite', 'departement', 'lieu_controle', 'pays', 'secteur_activite'],
 ];
 
-foreach ($entetes_files as $file => $headers) { // Boucle sur chaque fichier pour l'importation
-    importCsvToDataBase("../data/$file", $headers);
-}
+// foreach ($entetes_files as $file => $headers) { // Boucle sur chaque fichier pour l'importation
+//     importCsvToDataBase("../data/$file", $headers);
+// }
     $query = "SELECT id, lieu_controle, departement, pays FROM liste_controle WHERE longitude IS NULL AND latitude IS NULL";
     $result = $dbh->query($query);
     var_dump($result);

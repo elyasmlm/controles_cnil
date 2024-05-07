@@ -17,9 +17,14 @@ class place {
     public function findCoordinates() {
       $query = urlencode($this->name . ', ' . $this->dep . ', ' . $this->country);
       $url = "https://nominatim.openstreetmap.org/search?format=json&q={$query}";
-
       // Utilisation de file_get_contents pour simplifier l'exemple. Considérez utiliser cURL ou Guzzle pour une meilleure gestion des erreurs et des options HTTP.
-      $response = file_get_contents($url);
+      $options = array(
+        'http' => array(
+            'header' => "User-Agent: MyScript/1.0\r\n"
+        )
+      );
+      $context = stream_context_create($options);
+      $response = file_get_contents($url, false, $context);
       $data = json_decode($response, true);
 
       if ($data && count($data) > 0) {
