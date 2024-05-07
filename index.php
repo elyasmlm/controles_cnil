@@ -1,7 +1,8 @@
 <?php
     include_once('head.php');
-    include_once('connexion.bkp.php');
-    include_once('class/city.class.php');
+    include_once('connexion.php');
+    include_once('class/place.class.php');
+    include_once('function.php');
 
 ?>
 
@@ -22,7 +23,7 @@
             <div class="filter">
                 <label for="filter1">Filtre 1:</label>
                 <select id="filter1">
-                    <option value="1">huitre</option>
+                    <option value="1">test</option>
                 </select>
             </div>
             <!-- Ajouter plus de filtres selon vos besoins -->
@@ -35,7 +36,7 @@
         <section id="statsSection" style="display:none;">
             <!-- Carte pour choisir les statistiques -->
             <!-- ... -->
-            pipi
+            Les stats seront la
             <!-- Carte pour afficher les statistiques -->
             <!-- ... -->
         </section>
@@ -47,6 +48,8 @@
      crossorigin=""></script>
 <script src="js/main.js"></script>
 <script src="js/map.js"></script>
-
+<?php
+    create_data_to_display();
+?>
 </body>
 </html>
