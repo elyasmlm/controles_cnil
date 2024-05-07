@@ -2,7 +2,6 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-
 include '../connexion.php';  // Connexion à la base de données
 require_once '../class/place.class.php';  // Inclure la classe Place
 
@@ -73,52 +72,52 @@ $entetes_files = [
     '2022.csv' => ['type_de_controle', 'nom', 'modalite', 'departement', 'lieu_controle', 'pays', 'secteur_activite'],
 ];
 
-// foreach ($entetes_files as $file => $headers) { // Boucle sur chaque fichier pour l'importation
-//     importCsvToDataBase("../data/$file", $headers);
-// }
-    $query = "SELECT id, lieu_controle, departement, pays FROM liste_controle WHERE longitude IS NULL AND latitude IS NULL";
-    $result = $dbh->query($query);
-    var_dump($result);
+foreach ($entetes_files as $file => $headers) { // Boucle sur chaque fichier pour l'importation
+   importCsvToDataBase("../data/$file", $headers);
+}
 
-    if ($result && $result->num_rows > 0) {
-        $updateSql = "UPDATE liste_controle SET latitude = ?, longitude = ? WHERE id = ?";
-        $updateStmt = $dbh->prepare($updateSql);
+// Mettre à jour les champs "pays" qui sont null et mettre France
+$queryUpdateCountries = "UPDATE `liste_controle` SET pays = 'France' WHERE pays is NULL";
+$resultUpdateCountries = $dbh->query($queryUpdateCountries);
 
-        $latitude = 0.0;
-        $longitude = 0.0;
-        $id = 0;
-        
-        $updateStmt->bind_param('ddi', $latitude, $longitude, $id);
+// Insérer la latitude et la longitude pour chaque controle (la géolocalisation)
+$query = "SELECT lieu_controle, departement, pays FROM liste_controle WHERE longitude IS NULL AND latitude IS NULL GROUP BY lieu_controle, departement, pays";
+$result = $dbh->query($query);
 
-        while ($row = $result->fetch_assoc()) {
-            $id = $row['id'];
-            $name = $row['lieu_controle'];
-            $dep = $row['departement'];
-            $country = isset($row['pays']) ? $row['pays'] : 'France';
+if ($result && $result->num_rows > 0) {
+    $updateSql = "UPDATE liste_controle SET latitude = ?, longitude = ? WHERE lieu_controle = ? AND departement = ? AND pays = ?";
+    $updateStmt = $dbh->prepare($updateSql);
 
-            // Créez un nouvel objet Place et trouvez les coordonnées
-            $place = new Place($name, $dep, $country);
-            try {
-                $coordinates = $place->findCoordinates();
-                if ($coordinates) {
-                    $latitude = $coordinates['latitude'];
-                    echo $latitude;
-                    $longitude = $coordinates['longitude'];
-                    echo $longitude;
-                    $updateStmt->execute();
-                    echo "Mise à jour réussie pour ID {$id}: ({$latitude}, {$longitude})\n";
-                }
-            } catch (Exception $e) {
-                echo "Erreur pour ID {$id}: " . $e->getMessage() . "\n";
+    $latitude = 0.0;
+    $longitude = 0.0;
+
+    while ($row = $result->fetch_assoc()) {
+        $name = $row['lieu_controle'];
+        $dep = $row['departement'];
+        $country = $row['pays'];
+
+        // Création d'un nouvel objet Place et trouvez les coordonnées
+        $place = new Place($name, $dep, $country);
+        try {
+            $coordinates = $place->findCoordinates(); // Appel de la fonction permettant de trouver les coordonnées du lieu.
+            if ($coordinates) {
+                $latitude = $coordinates['latitude'];
+                $longitude = $coordinates['longitude'];
+                // Utilisation de 'sdsss' pour lier les types des valeurs de latitude (float), longitude (float), lieu_controle, departement, et pays (string)
+                $updateStmt->bind_param('ddsss', $latitude, $longitude, $name, $dep, $country);
+                $updateStmt->execute();
             }
+        } catch (Exception $e) {
+            echo "Erreur pour {$lieu}, {$dep}, {$country}: " . $e->getMessage() . "\n";
         }
-        $updateStmt->close();
-    } else {
-        echo "Aucun contrôle trouvé nécessitant une mise à jour.\n";
     }
+    $updateStmt->close();
+} else {
+    echo "Aucun contrôle trouvé nécessitant une mise à jour.\n";
+}
 
-    // Fermez la connexion
-    $conn->close();
+// Fermez la connexion
+$dbh->close();
 
 
 ?>
