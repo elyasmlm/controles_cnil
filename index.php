@@ -46,10 +46,12 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 <script src="js/main.js"></script>
 <script src="js/map.js"></script>
 <?php
-    create_data_to_display();
+    $pins = all_coordinates();
+    display_pins($pins)
 ?>
 </body>
 </html>

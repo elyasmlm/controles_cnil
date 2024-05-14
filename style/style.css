@@ -183,6 +183,18 @@ button:hover {
     flex: 1; /* Les filtres prennent l'espace disponible */
     padding: 20px; /* Espacement autour des filtres */
     max-width: 300px; /* Largeur maximale pour les filtres */
-    /* Ajoutez des styles supplémentaires si nécessaire */
 }
-/* Ajouter ici des styles supplémentaires selon vos besoins */
+
+a {
+    cursor: pointer;
+}
+
+.swal2-popup {
+    height: 90vh !important; /* 100% de la hauteur de la fenêtre du navigateur */
+    max-height: 90vh !important; /* Empêcher toute hauteur supérieure à celle de l'écran */
+}
+
+.swal2-content {
+    max-height: 90vh; /* Hauteur maximale du contenu pour permettre l'espacement et les boutons */
+    overflow-y: auto; /* Permettre le défilement si le contenu dépasse la hauteur maximale */
+}

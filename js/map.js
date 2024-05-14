@@ -4,5 +4,6 @@ L.tileLayer('https://api.mapbox.com/styles/v1/elyasos/clvgdheqy016p01qp805rfss9/
     attribution: 'Map data &copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'
 }).addTo(map);
 
-L.marker([48.8566, 2.3522]).addTo(map)
-    .bindPopup('Un beau cœur sur Paris!');
+function addOnePinOnMap(lat,lon, map, popUpContent) {
+    L.marker([lat,lon]).addTo(map).bindPopup(popUpContent)
+}
