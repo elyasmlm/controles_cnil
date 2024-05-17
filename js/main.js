@@ -50,3 +50,52 @@ function openSwal(swalContent, header) {
         }
     });
 }
+
+function applyFilters() {
+    var annee = $('#annee').val();
+    var typeDeControle = $('#type_de_controle').val();
+    var modalite = $('#modalite').val();
+    var lieuControle = $('#lieu_controle').val();
+    var secteurActivite = $('#secteur_activite').val();
+
+    $.ajax({
+        url: 'filter_data.php',
+        type: 'GET',
+        dataType: 'json',
+        data: {
+            annee: annee,
+            type_de_controle: typeDeControle,
+            modalite: modalite,
+            lieu_controle: lieuControle,
+            secteur_activite: secteurActivite
+        },
+        success: function(data) {
+            console.log(data)
+            updateMap(data);
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', status, error);
+        }
+    });
+}
+
+function updateMap(data) {
+    markersLayer.clearLayers(); // Supprime tous les marqueurs actuels
+
+    // Boucle sur chaque point de données pour ajouter un marqueur
+    data.forEach(function(point) {
+        addOnePinOnMap(point[0], point[1], point[2], point[3]); // point[2] devrait être le contenu du pop-up
+    });
+}
+
+function resetFilters() {
+    // Réinitialiser les valeurs des sélecteurs
+    $('#annee').val('');
+    $('#type_de_controle').val('');
+    $('#modalite').val('');
+    $('#lieu_controle').val('');
+    $('#secteur_activite').val('');
+
+    // Rafraîchir la carte en relançant la requête AJAX sans filtres
+    applyFilters();
+}

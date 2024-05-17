@@ -14,11 +14,36 @@ function all_coordinates() {
     return $coordinates;
 }
 
+function get_type($lat, $lon) {
+    global $dbh; 
+
+    $query = "SELECT type_de_controle FROM liste_controle 
+              WHERE 
+                latitude BETWEEN $lat - 0.0001 AND $lat + 0.0001
+                AND longitude BETWEEN $lon - 0.0001 AND $lon + 0.0001";
+
+    
+
+        $result = $dbh->query($query);
+        $num_rows = $result->num_rows;
+
+        if ($num_rows > 1) {
+            return 'plus';
+        } else if ($num_rows == 1) {
+            $row = $result->fetch_assoc();
+            return $row['type_de_controle'];
+        }
+    
+        return 'undefined';
+}
+
+
 function display_pins($pins) {
     echo "<script>";
     foreach ($pins as $pin) {
+        $type = json_encode(get_type($pin[0], $pin[1]));
         $pop_up_content = json_encode(find_pop_up_content($pin));
-        echo "addOnePinOnMap({$pin[0]}, {$pin[1]}, map, $pop_up_content);";
+        echo "addOnePinOnMap({$pin[0]}, {$pin[1]}, $type, $pop_up_content);";
     }
     echo "</script>";
 }
@@ -82,4 +107,25 @@ function checkValue($value) {
 
 function joinWithComma($array) {
     return implode(', ', array_filter($array, function($value) { return $value !== ""; }));
+}
+
+function display_filter($filter) {
+    global $dbh;
+    $title = ucfirst($filter);
+    $filter_echo = "<div class='filter'>
+                    <label for='".$filter."'>".$title." :</label>
+                    <select id='".$filter."' onchange='applyFilters()'>
+                        <option value='' selected>Choisir</option>";
+                        
+    $query = "SELECT ".$filter." AS filter FROM liste_controle WHERE ".$filter." IS NOT NULL GROUP BY ".$filter;
+    $result = $dbh->query($query);
+
+    while ($row = $result->fetch_assoc()) {
+        $filter_echo .= "<option value='".$row['filter']."'> ".ucfirst($row['filter'])."</option>";
+    }
+    
+    $filter_echo .='</select>
+    </div>';
+
+    return $filter_echo;
 }

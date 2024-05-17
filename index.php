@@ -8,24 +8,19 @@
 
 <!-- Contenu principal -->
 <main>
-<div class="switch-wrapper">
-    <div class="switch-button">
-        <button id="statBtn" onclick="toggleView('stats')" class="active">Statistique</button>
-        <button id="mapBtn" onclick="toggleView('map')">Carte</button>
-    </div>
-</div>
-
     <div class='main'>
         <!-- Section Carte -->
         <section id="mapSection">
         <div class="filters">
 
-            <div class="filter">
-                <label for="filter1">Filtre 1:</label>
-                <select id="filter1">
-                    <option value="1">test</option>
-                </select>
-            </div>
+            <?php
+                echo display_filter('annee');
+                echo display_filter('type_de_controle');
+                echo display_filter('modalite');
+                echo display_filter('lieu_controle');
+                echo display_filter('secteur_activite');
+            ?>
+            <button id="resetFilters" onclick="resetFilters()">Réinitialiser les Filtres</button>
             <!-- Ajouter plus de filtres selon vos besoins -->
         </div>
             <!-- Carte (Juste un espace pour la carte pour l'instant) -->
