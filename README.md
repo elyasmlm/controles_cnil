@@ -1,10 +1,10 @@
 # controles_cnil
-CNIL's control project 
+Projet de contrôle de la CNIL
 
-![image](https://github.com/elyasmlm/controles_cnil/assets/144436695/0421b7cb-5e92-4f08-8ea9-efb94403df8d)
+![image](https://github.com/elyasmlm/controles_cnil/assets/117287234/dd7e0467-4909-4f48-ba31-7217115a41d7)
 
-The CNIL is the French authority responsible for ensuring compliance with the GDPR by companies and administrations. It is the gendarme of the GDPR (General Data Protection Regulation). This regulation strengthens the obligations of companies with regard to the processing of personal data.
+La CNIL est l'autorité française chargée de veiller à la conformité des entreprises et des administrations au RGPD. Elle est le gendarme du RGPD (Règlement Général sur la Protection des Données). Ce règlement renforce les obligations des entreprises en matière de traitement des données personnelles.
 
-Since 2014, every year CNIL publidh on data.gouv.fr the list of realised controls.
+Depuis 2014, chaque année, la CNIL publie sur data.gouv.fr la liste des contrôles réalisés.
 
-This project aims to make a website that valorise and exploits these data under the form of a map and graphs.
+Ce projet vise à créer un site web qui valorise et exploite ces données sous la forme d'une carte et de graphiques.
