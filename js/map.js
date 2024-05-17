@@ -41,7 +41,6 @@ function getPin(type) {
         default :
             iconLink = 'data/pins_map/pin_multiple.png'
     }
-    console.log(iconLink)
 
     var customIcon = L.icon({
         iconUrl: iconLink,

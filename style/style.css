@@ -1,5 +1,3 @@
-/* Styles de base */
-
 :root {
     --dark-blue: #000e29;
     --text-info: #1c6266;
@@ -23,7 +21,6 @@ body {
     background-color: #7ebcc0;
 }
 
-/* Barre de navigation */
 .nav-wrapper {
     background-color: var(--dark-blue);
     color: #ffffff;
@@ -35,78 +32,24 @@ body {
 }
 
 .brand-logo {
-    display: flex; /* Utilise flexbox */
-    align-items: center; /* Centre verticalement le contenu */
-    gap: 0.5rem; /* Ajoute un petit espace entre l'image et le texte */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .brand-logo img {
-    width: 100px; /* Gardez votre taille d'image */
+    width: 100px;
 }
 
 .site-name {
-    font-size: 1.75rem; /* Réglage de la taille du texte si nécessaire */
-    color: #ffffff; /* Couleur du texte */
+    font-size: 1.75rem;
+    color: #ffffff; 
+    text-decoration: none;
 }
 li {
-    list-style-type: none; /* Enlève les puces des listes */
+    list-style-type: none;
 }
 
-
-.right button {
-    background-color: var(--btn-info);
-    border: none;
-    padding: 0.5rem 1.5rem;
-    color: white;
-    cursor: pointer;
-    border-radius: 20px;
-    transition: background-color 0.3s ease;
-    font-size: 16px;
-}
-
-.right button:hover {
-    background-color: var(--text-info);
-    color : var(--btn-info);
-}
-
-/* Bouton de bascule */
-.switch-wrapper {
-    display: flex; /* Utilise flexbox */
-    justify-content: center; /* Centre les éléments horizontalement */
-    align-items: center; /* Centre les éléments verticalement */
-    padding: 5px; /* Espacement autour des boutons */
-    background-color: #7ebcc0; /* Couleur de fond pour le commutateur */
-    border-radius: 20px; /* Bord arrondi pour le fond */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre légère autour du commutateur */
-    width: 10%;
-    margin: auto; /* Si le switch-wrapper est lui-même un bloc de niveau supérieur */
-    margin-top: 20px;
-    margin-bottom: 0px;
-}
-
-.switch-button button {
-    background-color: #e6e6e6;
-    color: #333;
-    border: none;
-    outline: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 15px; /* Bord arrondi pour les boutons */
-    /* Enlèvement des marges par défaut pour que le bouton s'adapte parfaitement au fond */
-    margin: 0;
-    position: relative; /* Pour la position de l'ombre interne */
-    z-index: 1; /* Garantit que le bouton est au-dessus de l'ombre */
-}
-
-.switch-button .active {
-    background-color: #ffffff; /* Fond du bouton actif */
-    color: #333;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Ombre interne pour le bouton actif */
-}
-
-
-/* Styles des cartes */
 .card {
     background: #ffffff;
     margin: 1rem;
@@ -125,9 +68,6 @@ li {
     color: #333;
 }
 
-/* Formulaires et boutons */
-input[type="search"],
-input[type="checkbox"],
 select {
     width: 100%;
     padding: 0.5rem;
@@ -150,39 +90,63 @@ button:hover {
     opacity: 0.7;
 }
 
-/* Style pour le bouton En savoir plus */
-#infoBtn {
-    position: relative;
-    color: var(--text-info);
-    font-weight: bold; /* Si vous voulez que le texte soit en gras */
-}
-
-#infoBtn:hover {
-    color : var(--btn-info);
+.main-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
 }
 
 #mapSection {
-    display: flex; /* Active Flexbox pour la disposition horizontale */
-    align-items: flex-start; /* Alignez les enfants au haut du conteneur */
-    justify-content: center; /* Centre les enfants horizontalement */
-    width: 70%;
-    height: 70vh;
-    margin: auto;
-    margin-top: 20px;
+    flex: 1 1 45%;
+    position: relative;
+    height: 75h;
+    min-width: 400px;
     background-color: var(--text-info);
-    padding-top: 50px;
     border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #map {
-    height: 60vh;
-    width: 60%;
+    height: 100%;
+    width: 100%;
 }
 
 .filters {
-    flex: 1; /* Les filtres prennent l'espace disponible */
-    padding: 20px; /* Espacement autour des filtres */
-    max-width: 300px; /* Largeur maximale pour les filtres */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    width: 250px;
+}
+
+#chartsSection {
+    flex: 1 1 50%;
+    display: flex;
+    flex-wrap: wrap;
+    height: 75vh !important ;
+}
+
+.chart-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.chart {
+    flex: 1 1 45%;
+    height: 400px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 20px;
 }
 
 a {
@@ -190,11 +154,26 @@ a {
 }
 
 .swal2-popup {
-    height: 90vh !important; /* 100% de la hauteur de la fenêtre du navigateur */
-    max-height: 90vh !important; /* Empêcher toute hauteur supérieure à celle de l'écran */
+    height: 90vh !important;
+    max-height: 90vh !important;
 }
 
 .swal2-content {
-    max-height: 90vh; /* Hauteur maximale du contenu pour permettre l'espacement et les boutons */
-    overflow-y: auto; /* Permettre le défilement si le contenu dépasse la hauteur maximale */
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.second-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+}
+
+.total-controles-container {
+    background-color: var(--dark-blue);
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 1.5rem;
 }

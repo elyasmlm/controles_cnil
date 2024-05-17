@@ -3,38 +3,42 @@
 function all_coordinates() {
     global $dbh;
     $query = "SELECT DISTINCT latitude, longitude FROM liste_controle WHERE latitude IS NOT NULL";
-    $result = $dbh->query($query);
+    $stmt = $dbh->prepare($query);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     $coordinates = [];
-
-    while($row = $result->fetch_assoc()) {
+    while ($row = $result->fetch_assoc()) {
         $coordinates[] = [$row['latitude'], $row['longitude']];
     }
 
+    $stmt->close();
     return $coordinates;
 }
 
 function get_type($lat, $lon) {
     global $dbh; 
-
     $query = "SELECT type_de_controle FROM liste_controle 
               WHERE 
-                latitude BETWEEN $lat - 0.0001 AND $lat + 0.0001
-                AND longitude BETWEEN $lon - 0.0001 AND $lon + 0.0001";
+                latitude BETWEEN ? - 0.0001 AND ? + 0.0001
+                AND longitude BETWEEN ? - 0.0001 AND ? + 0.0001";
+    $stmt = $dbh->prepare($query);
+    $stmt->bind_param('dddd', $lat, $lat, $lon, $lon);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $num_rows = $result->num_rows;
 
-    
+    if ($num_rows > 1) {
+        $type = 'plus';
+    } else if ($num_rows == 1) {
+        $row = $result->fetch_assoc();
+        $type = $row['type_de_controle'];
+    } else {
+        $type = 'undefined';
+    }
 
-        $result = $dbh->query($query);
-        $num_rows = $result->num_rows;
-
-        if ($num_rows > 1) {
-            return 'plus';
-        } else if ($num_rows == 1) {
-            $row = $result->fetch_assoc();
-            return $row['type_de_controle'];
-        }
-    
-        return 'undefined';
+    $stmt->close();
+    return $type;
 }
 
 
@@ -64,12 +68,13 @@ function find_pop_up_content($pin) {
             FROM 
                 liste_controle
             WHERE 
-                latitude BETWEEN $pin[0] - 0.0001 AND $pin[0] + 0.0001
-                AND longitude BETWEEN $pin[1] - 0.0001 AND $pin[1] + 0.0001";
+                latitude BETWEEN ? - 0.0001 AND ? + 0.0001
+                AND longitude BETWEEN ? - 0.0001 AND ? + 0.0001";
 
-    $result = $dbh->query($query);
-    $nb_lines = $result->num_rows;
-
+    $stmt = $dbh->prepare($query);
+    $stmt->bind_param('dddd', $pin[0], $pin[0], $pin[1], $pin[1]);
+    $stmt->execute();
+    $result = $stmt->get_result();
     $nb_lines = $result->num_rows;
 
     if ($nb_lines <= 3) {
@@ -84,7 +89,6 @@ function find_pop_up_content($pin) {
                         </div>";
         }
     } else {
-
         $tableContent = "<table id='resultsTable' class='table table-striped table-hover' style='width:100%'><thead><tr><th style='width:10%'>Année</th><th style='width:10%'>Type de Contrôle</th><th style='width:10%'>Modalité</th><th style='width:50%'>Nom</th><th style='width:30%'>Secteur d'Activité</th></tr></thead><tbody>";
         while ($row = $result->fetch_assoc()) {
             $tableContent .= "<tr><td>{$row['annee']}</td><td>{$row['type_de_controle']}</td><td>{$row['modalite']}</td><td>{$row['nom']}</td><td>{$row['secteur_activite']}</td></tr>";
@@ -94,11 +98,10 @@ function find_pop_up_content($pin) {
 
         $content = "<div style='text-align: center'><p>Trop de résultats pour afficher en détail.</p>
                     <a class='link' onclick='openSwal(`{$escapedTableContent}`)'>Voir plus</a></div>";
-
-
     }
 
-        return $content;
+    $stmt->close();
+    return $content;
 }
 
 function checkValue($value) {
@@ -118,7 +121,9 @@ function display_filter($filter) {
                         <option value='' selected>Choisir</option>";
                         
     $query = "SELECT ".$filter." AS filter FROM liste_controle WHERE ".$filter." IS NOT NULL GROUP BY ".$filter;
-    $result = $dbh->query($query);
+    $stmt = $dbh->prepare($query);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     while ($row = $result->fetch_assoc()) {
         $filter_echo .= "<option value='".$row['filter']."'> ".ucfirst($row['filter'])."</option>";
@@ -127,5 +132,18 @@ function display_filter($filter) {
     $filter_echo .='</select>
     </div>';
 
+    $stmt->close();
     return $filter_echo;
+}
+
+function get_total_number_controls() {
+    global $dbh;
+    $query_total_controles = "SELECT COUNT(*) as total FROM liste_controle";
+    $stmt = $dbh->prepare($query_total_controles);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $total_controles = $result->fetch_assoc()['total'];
+
+    $stmt->close();
+    echo $total_controles;
 }
